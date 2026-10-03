@@ -1,0 +1,1024 @@
+:root {
+  --ink: #1a2433;
+  --muted: #5a6a7e;
+  --paper: #f4f7fb;
+  --paper-deep: #e8eef6;
+  --white: #ffffff;
+  --line: #d5dee9;
+
+  --physics: #2f6fed;
+  --physics-soft: #dce8ff;
+  --physics-deep: #1d4ed8;
+
+  --math: #1f9d6a;
+  --math-soft: #d7f3e6;
+  --math-deep: #0f7a4f;
+
+  --chem: #e67a22;
+  --chem-soft: #ffe4c8;
+  --chem-deep: #c45f0c;
+
+  --ap: #7b5cff;
+  --ap-soft: #ebe4ff;
+  --ap-deep: #5b3fd6;
+
+  --shadow: 0 10px 30px rgba(26, 36, 51, 0.08);
+  --radius: 18px;
+  --page-w: 11in;
+  --page-h: 8.5in;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: "Lexend", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 10% 0%, #dcecff 0%, transparent 40%),
+    radial-gradient(circle at 90% 20%, #ffe8d4 0%, transparent 35%),
+    linear-gradient(180deg, #eef3f9 0%, #f7f9fc 40%, #eef2f7 100%);
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+p { margin: 0; }
+
+a { color: inherit; text-decoration: none; }
+
+/* Screen nav */
+.screen-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: rgba(244, 247, 251, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+
+.screen-nav a,
+.print-btn,
+.cal-btn {
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  font-family: inherit;
+}
+
+.screen-nav a:hover,
+.print-btn:hover,
+.cal-btn:hover {
+  background: var(--white);
+  color: var(--ink);
+  border-color: var(--line);
+  transform: translateY(-1px);
+}
+
+.cal-btn {
+  margin-left: auto;
+  background: var(--physics-soft);
+  color: var(--physics-deep);
+  border-color: #bdd0ff;
+}
+
+.cal-btn:hover {
+  background: #cfe0ff;
+  color: var(--physics-deep);
+  border-color: #9db8f5;
+}
+
+.cal-btn.solid {
+  margin-left: 0;
+  background: var(--physics);
+  color: white;
+  border-color: var(--physics);
+  font-size: 1rem;
+  padding: 0.75rem 1.25rem;
+}
+
+.cal-btn.solid:hover {
+  background: var(--physics-deep);
+  border-color: var(--physics-deep);
+  color: white;
+}
+
+.print-btn {
+  background: var(--ink);
+  color: white;
+  border-color: var(--ink);
+}
+
+.print-btn:hover {
+  background: var(--physics-deep);
+  border-color: var(--physics-deep);
+  color: white;
+}
+
+.share-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1.25rem;
+}
+
+.share-hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  max-width: 26rem;
+}
+
+/* Pages */
+.page {
+  width: min(var(--page-w), calc(100vw - 2rem));
+  min-height: var(--page-h);
+  margin: 1.25rem auto;
+  padding: 1.35rem 1.5rem;
+  background: var(--white);
+  border: 1px solid rgba(213, 222, 233, 0.9);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(47, 111, 237, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(47, 111, 237, 0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.page > * {
+  position: relative;
+  z-index: 1;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--paper-deep);
+}
+
+.page-header h1 {
+  font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+  line-height: 1.1;
+}
+
+.eyebrow {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.mindset {
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-weight: 500;
+  max-width: 14rem;
+  text-align: right;
+}
+
+.physics-tone { color: var(--physics-deep); }
+
+/* Cover */
+.cover {
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(135deg, rgba(220, 232, 255, 0.85), rgba(255, 255, 255, 0.95) 45%, rgba(255, 228, 200, 0.55)),
+    var(--white);
+}
+
+.cover-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 55% at 80% 20%, rgba(47, 111, 237, 0.18), transparent 60%),
+    radial-gradient(ellipse 50% 45% at 15% 80%, rgba(230, 122, 34, 0.14), transparent 55%),
+    radial-gradient(ellipse 40% 40% at 70% 75%, rgba(123, 92, 255, 0.12), transparent 50%);
+  animation: wash 12s ease-in-out infinite alternate;
+}
+
+.cover-content {
+  width: min(720px, 100%);
+  text-align: center;
+}
+
+.cover .brand {
+  font-size: clamp(2.6rem, 5vw, 4rem);
+  line-height: 1.05;
+  margin: 0.35rem 0 0.6rem;
+}
+
+.cover .subtitle {
+  font-size: 1.25rem;
+  color: var(--muted);
+  font-weight: 400;
+  margin-bottom: 1.25rem;
+}
+
+.study-window {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid var(--line);
+  margin-bottom: 1.35rem;
+}
+
+.study-window .window-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.study-window strong {
+  font-size: 1.2rem;
+}
+
+.goals-block {
+  text-align: left;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1rem 1.15rem;
+  margin-bottom: 1.25rem;
+}
+
+.goals-block h2 {
+  font-size: 1.2rem;
+  margin-bottom: 0.65rem;
+}
+
+.goal-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.35rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.goal-row:hover { background: var(--paper); }
+
+.goal-row span {
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.chip {
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.chip.physics { background: var(--physics-soft); color: var(--physics-deep); }
+.chip.math { background: var(--math-soft); color: var(--math-deep); }
+.chip.chem { background: var(--chem-soft); color: var(--chem-deep); }
+.chip.ap { background: var(--ap-soft); color: var(--ap-deep); }
+
+/* Large checkboxes */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.65rem;
+  height: 1.65rem;
+  min-width: 1.65rem;
+  border: 2.5px solid currentColor;
+  border-radius: 8px;
+  background: var(--white);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  color: var(--muted);
+}
+
+input[type="checkbox"]:hover {
+  transform: scale(1.06);
+}
+
+input[type="checkbox"]:checked {
+  background: currentColor;
+  border-color: currentColor;
+  animation: check-pop 0.28s ease;
+}
+
+input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 0.42rem;
+  top: 0.18rem;
+  width: 0.38rem;
+  height: 0.75rem;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+/* Dashboard */
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 0.85rem;
+  min-height: calc(var(--page-h) - 3.5rem);
+}
+
+.physics-panel { grid-column: 1; grid-row: 1 / span 2; }
+.math-panel { grid-column: 2; grid-row: 1; }
+.chem-panel { grid-column: 3; grid-row: 1; }
+.ap-panel { grid-column: 2 / span 2; grid-row: 2; }
+
+.panel {
+  border-radius: var(--radius);
+  padding: 0.95rem;
+  border: 1px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.physics-panel { background: linear-gradient(180deg, var(--physics-soft), #f7faff); border-color: #bdd0ff; color: var(--physics-deep); }
+.math-panel { background: linear-gradient(180deg, var(--math-soft), #f5fcf8); border-color: #b5e5cd; color: var(--math-deep); }
+.chem-panel { background: linear-gradient(180deg, var(--chem-soft), #fff8f1); border-color: #f3c896; color: var(--chem-deep); }
+.ap-panel { background: linear-gradient(180deg, var(--ap-soft), #faf8ff); border-color: #cfc2ff; color: var(--ap-deep); }
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.panel-head h2 {
+  font-size: 1.45rem;
+  color: inherit;
+}
+
+.progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 7rem;
+}
+
+.progress-wrap.big {
+  min-width: 10rem;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 0.65rem;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.progress-bar span {
+  display: block;
+  height: 100%;
+  background: currentColor;
+  border-radius: inherit;
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.progress-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: inherit;
+  min-width: 2.2rem;
+}
+
+.check-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+  flex: 1;
+}
+
+.check-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  flex: 1;
+}
+
+.ap-panel .check-stack {
+  flex-direction: row;
+}
+
+.ap-panel .check-card { flex: 1; }
+
+.check-card {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem 0.9rem;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  border-radius: 14px;
+  cursor: pointer;
+  color: var(--ink);
+  font-weight: 500;
+  font-size: 0.98rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: 0 2px 8px rgba(26, 36, 51, 0.04);
+}
+
+.check-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(26, 36, 51, 0.08);
+}
+
+.check-card.wide { grid-column: 1 / -1; }
+.check-card.accent {
+  background: var(--physics);
+  color: white;
+  border-color: var(--physics);
+}
+
+.check-card.accent input[type="checkbox"] {
+  color: white;
+  border-color: rgba(255, 255, 255, 0.85);
+  background: transparent;
+}
+
+.check-card.accent input[type="checkbox"]:checked {
+  background: white;
+  border-color: white;
+}
+
+.check-card.accent input[type="checkbox"]:checked::after {
+  border-color: var(--physics);
+}
+
+.check-card.physics { color: var(--physics-deep); background: var(--physics-soft); }
+.check-card.math { color: var(--math-deep); background: var(--math-soft); }
+.check-card.chem { color: var(--chem-deep); background: var(--chem-soft); }
+.check-card.ap { color: var(--ap-deep); background: var(--ap-soft); }
+
+.check-card.physics input,
+.check-card.math input,
+.check-card.chem input,
+.check-card.ap input,
+.physics-panel input,
+.math-panel input,
+.chem-panel input,
+.ap-panel input {
+  color: currentColor;
+}
+
+/* Weekly routine */
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.55rem;
+}
+
+.day-card {
+  background: var(--paper);
+  border-radius: 16px;
+  padding: 0.7rem 0.65rem;
+  border: 1px solid var(--line);
+  min-height: 12rem;
+}
+
+.day-card.sunday {
+  grid-column: auto;
+}
+
+.day-card h3 {
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid var(--line);
+}
+
+.day-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.day-card li {
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 0.35rem 0.4rem;
+  border-radius: 10px;
+  line-height: 1.25;
+}
+
+.day-card li.physics { background: var(--physics-soft); color: var(--physics-deep); }
+.day-card li.math { background: var(--math-soft); color: var(--math-deep); }
+.day-card li.chem { background: var(--chem-soft); color: var(--chem-deep); }
+.day-card li.ap { background: var(--ap-soft); color: var(--ap-deep); }
+.day-card li.neutral { background: #eef1f5; color: var(--muted); }
+.day-card li.fixed {
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 currentColor;
+}
+
+/* Mission tracker */
+.mission-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.7rem;
+}
+
+.mission-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  gap: 0.35rem 0.75rem;
+  align-items: center;
+  padding: 0.9rem 0.95rem;
+  background: linear-gradient(180deg, var(--physics-soft), #f8faff);
+  border: 1.5px solid #c5d7ff;
+  border-radius: 16px;
+  cursor: pointer;
+  color: var(--physics-deep);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.mission-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(47, 111, 237, 0.12);
+}
+
+.mission-card .date {
+  grid-column: 2;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.mission-card input {
+  grid-row: 1 / span 2;
+  width: 1.85rem;
+  height: 1.85rem;
+  color: var(--physics);
+}
+
+.mission-card .task {
+  grid-column: 2;
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.mission-card.test-day {
+  background: linear-gradient(180deg, var(--physics), var(--physics-deep));
+  border-color: var(--physics-deep);
+  color: white;
+}
+
+.mission-card.test-day .date,
+.mission-card.test-day .task { color: white; }
+
+.mission-card.test-day input {
+  color: white;
+  border-color: rgba(255,255,255,0.85);
+  background: transparent;
+}
+
+.mission-card.test-day input:checked {
+  background: white;
+}
+
+.mission-card.test-day input:checked::after {
+  border-color: var(--physics-deep);
+}
+
+.mission .progress-wrap {
+  color: var(--physics);
+}
+
+/* Habit tracker */
+.habit-board {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.habit-row {
+  display: grid;
+  grid-template-columns: 5.5rem repeat(4, 1fr);
+  gap: 0.45rem;
+  align-items: stretch;
+}
+
+.habit-row > div,
+.habit-row > label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.55rem;
+  border-radius: 12px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  font-weight: 600;
+}
+
+.habit-row > div:first-child {
+  justify-content: flex-start;
+  padding-left: 0.85rem;
+  background: var(--white);
+}
+
+.habit-row.head > div {
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  min-height: 2.2rem;
+}
+
+.habit-row.head .physics { background: var(--physics-soft); color: var(--physics-deep); border-color: #c5d7ff; }
+.habit-row.head .math { background: var(--math-soft); color: var(--math-deep); border-color: #b5e5cd; }
+.habit-row.head .chem { background: var(--chem-soft); color: var(--chem-deep); border-color: #f3c896; }
+.habit-row.head .ap { background: var(--ap-soft); color: var(--ap-deep); border-color: #cfc2ff; }
+
+.habit-row label {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.habit-row label:nth-child(2) { background: #f3f7ff; }
+.habit-row label:nth-child(3) { background: #f2fbf6; }
+.habit-row label:nth-child(4) { background: #fff8f1; }
+.habit-row label:nth-child(5) { background: #f7f4ff; }
+
+.habit-row label:nth-child(2) input { color: var(--physics); }
+.habit-row label:nth-child(3) input { color: var(--math); }
+.habit-row label:nth-child(4) input { color: var(--chem); }
+.habit-row label:nth-child(5) input { color: var(--ap); }
+
+.habit-row label:hover { filter: brightness(0.98); }
+
+.habit-row.highlight > div:first-child {
+  background: var(--physics-soft);
+  color: var(--physics-deep);
+  border-color: #c5d7ff;
+}
+
+/* Daily focus */
+.daily-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+}
+
+.priority-block {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 10rem;
+}
+
+.priority-block h2 {
+  font-size: 1.2rem;
+}
+
+.write-line {
+  flex: 1;
+  border-bottom: 2px dashed var(--line);
+  min-height: 2.5rem;
+}
+
+.write-line.big { min-height: 3.5rem; }
+
+.check-card.inline {
+  align-self: flex-start;
+  padding: 0.55rem 0.8rem;
+  background: var(--white);
+}
+
+.subject-complete {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.65rem;
+}
+
+.subject-complete .check-card {
+  justify-content: center;
+  min-height: 4rem;
+  font-size: 1.05rem;
+}
+
+.win-block {
+  grid-column: 1 / -1;
+  background: linear-gradient(135deg, #fff7ec, #f4f8ff);
+  border: 1px solid #f0d7b8;
+  border-radius: 16px;
+  padding: 1rem 1.15rem;
+}
+
+.win-block h2 {
+  font-size: 1.35rem;
+  margin-bottom: 0.2rem;
+}
+
+.win-block .hint {
+  color: var(--muted);
+  margin-bottom: 0.65rem;
+}
+
+.write-area {
+  min-height: 3.5rem;
+  border-radius: 12px;
+  border: 2px dashed #e2c9a8;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.date-line {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+/* Month goals */
+.goals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.goal-card {
+  display: flex;
+  gap: 0.9rem;
+  align-items: flex-start;
+  padding: 1.15rem 1.2rem;
+  border-radius: 18px;
+  border: 1.5px solid var(--line);
+  cursor: pointer;
+  background: var(--paper);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  min-height: 7.5rem;
+}
+
+.goal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.goal-card h3 {
+  font-size: 1.35rem;
+  margin-bottom: 0.35rem;
+  color: inherit;
+}
+
+.goal-card p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.goal-card input {
+  margin-top: 0.15rem;
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+.goal-card.physics { background: linear-gradient(180deg, var(--physics-soft), #f8faff); border-color: #c5d7ff; color: var(--physics-deep); }
+.goal-card.math { background: linear-gradient(180deg, var(--math-soft), #f5fcf8); border-color: #b5e5cd; color: var(--math-deep); }
+.goal-card.chem { background: linear-gradient(180deg, var(--chem-soft), #fff8f1); border-color: #f3c896; color: var(--chem-deep); }
+.goal-card.ap { background: linear-gradient(180deg, var(--ap-soft), #faf8ff); border-color: #cfc2ff; color: var(--ap-deep); }
+
+.goal-card.physics input,
+.goal-card.math input,
+.goal-card.chem input,
+.goal-card.ap input {
+  color: currentColor;
+}
+
+.anchor-note {
+  padding: 0.95rem 1.15rem;
+  border-radius: 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.anchor-note strong { color: var(--ink); }
+
+.anchor-note.celebrate {
+  background: linear-gradient(90deg, #fff4e8, #eef4ff);
+  border-color: #e8d0b4;
+}
+
+/* Motion */
+.animate-in {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: rise 0.7s ease forwards;
+}
+
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.2s; }
+.delay-3 { animation-delay: 0.32s; }
+.delay-4 { animation-delay: 0.45s; }
+.delay-5 { animation-delay: 0.58s; }
+
+@keyframes rise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes check-pop {
+  0% { transform: scale(0.9); }
+  60% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+@keyframes wash {
+  from { transform: scale(1) translateY(0); }
+  to { transform: scale(1.04) translateY(-8px); }
+}
+
+/* Mobile screen */
+@media (max-width: 1100px) {
+  .week-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .page {
+    width: calc(100vw - 1rem);
+    min-height: auto;
+    padding: 1rem;
+    margin: 0.75rem auto;
+  }
+
+  .dash-grid,
+  .week-grid,
+  .mission-grid,
+  .daily-grid,
+  .goals-grid,
+  .subject-complete,
+  .ap-panel .check-stack {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .physics-panel,
+  .math-panel,
+  .chem-panel,
+  .ap-panel,
+  .day-card.sunday,
+  .win-block,
+  .subject-complete {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .habit-row {
+    grid-template-columns: 4rem repeat(4, 1fr);
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mindset,
+  .date-line { text-align: left; }
+
+  .check-grid { grid-template-columns: 1fr; }
+}
+
+/* Print — landscape letter */
+@media print {
+  @page {
+    size: letter landscape;
+    margin: 0.35in;
+  }
+
+  body {
+    background: white;
+  }
+
+  .screen-nav,
+  .share-actions {
+    display: none !important;
+  }
+
+  .page {
+    width: 100%;
+    min-height: 0;
+    height: auto;
+    margin: 0;
+    padding: 0.2in 0.25in;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    page-break-after: always;
+    break-after: page;
+    overflow: visible;
+  }
+
+  .page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+
+  .page::before { opacity: 0.25; }
+
+  .cover-bg,
+  .animate-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .check-card:hover,
+  .mission-card:hover,
+  .goal-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  input[type="checkbox"] {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .panel,
+  .chip,
+  .day-card li,
+  .mission-card,
+  .goal-card,
+  .habit-row.head > div,
+  .habit-row label,
+  .subject-complete .check-card,
+  .win-block,
+  .anchor-note {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
