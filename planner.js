@@ -1,124 +1,118 @@
+/* ============================================================
+   Abby's Study Planner — planner.js
+   Handles:
+   - Checkbox saving
+   - Progress bar updates
+   - Mission tracker totals
+   - Habit tracker totals
+   - Calendar (.ics) file generation
+   - Smooth scrolling
+============================================================ */
+
+/* -----------------------------
+   1. Restore checkbox states
+----------------------------- */
+
 document.addEventListener("DOMContentLoaded", () => {
-  const checkboxKeys = [
-    "cover-g1", "cover-g2", "cover-g3", "cover-g4", "cover-g5",
-    "oct-p1", "oct-p2", "oct-p3", "oct-p4", "oct-p5", "oct-p6", "oct-p7",
-    "oct-m1", "oct-m2", "oct-m3",
-    "oct-c1", "oct-c2",
-    "oct-a1", "oct-a2", "oct-a3",
-    "mis-1", "mis-2", "mis-3", "mis-4", "mis-5", "mis-6", "mis-7", "mis-8", "mis-9", "mis-10", "mis-11", "mis-12",
-    "d-p1", "d-p2", "d-p3", "d-phys", "d-math", "d-chem", "d-ap",
-    "nov-1", "nov-2", "nov-3", "nov-4",
-    "dec-1", "dec-2", "dec-3", "dec-4"
-  ];
+  const boxes = document.querySelectorAll("input[type='checkbox'][data-key]");
 
-  const calendarBtn = document.getElementById("calendar-btn");
-  const calendarBtnCover = document.getElementById("calendar-btn-cover");
+  boxes.forEach(box => {
+    const key = box.dataset.key;
+    const saved = localStorage.getItem(key);
 
-  const saveState = () => {
-    const state = {};
-    document.querySelectorAll("input[type='checkbox']").forEach((box) => {
-      state[box.dataset.key] = box.checked;
-    });
-    localStorage.setItem("abby-study-planner-state", JSON.stringify(state));
-  };
-
-  const loadState = () => {
-    try {
-      const saved = JSON.parse(localStorage.getItem("abby-study-planner-state") || "{}");
-      document.querySelectorAll("input[type='checkbox']").forEach((box) => {
-        const key = box.dataset.key;
-        if (saved[key] !== undefined) box.checked = saved[key];
-      });
-    } catch (error) {
-      console.warn("Could not restore planner state", error);
+    if (saved === "true") {
+      box.checked = true;
     }
-  };
 
-  const updateProgress = () => {
-    document.querySelectorAll("[data-progress-group]").forEach((bar) => {
-      const group = bar.dataset.progressGroup;
-      const checkboxes = document.querySelectorAll(`input[data-group="${group}"]`);
-      const total = checkboxes.length;
-      const done = [...checkboxes].filter((input) => input.checked).length;
-      const percent = total ? (done / total) * 100 : 0;
-
-      const fill = bar.querySelector("span");
-      if (fill) fill.style.width = `${percent}%`;
-
-      const label = document.querySelector(`[data-progress-label="${group}"]`);
-      if (label) {
-        label.textContent = `${done}/${total}`;
-      }
+    box.addEventListener("change", () => {
+      localStorage.setItem(key, box.checked);
+      updateProgress();
     });
+  });
 
-    const missionBoxes = document.querySelectorAll('input[data-group="mission"]');
-    const missionTotal = missionBoxes.length;
-    const missionDone = [...missionBoxes].filter((box) => box.checked).length;
-
-    const missionLabel = document.querySelector('[data-progress-label="mission"]');
-    if (missionLabel) missionLabel.textContent = `${missionDone}/${missionTotal}`;
-
-    const missionBar = document.querySelector('[data-progress-group="mission"] span');
-    if (missionBar) missionBar.style.width = `${(missionDone / missionTotal) * 100}%`;
-  };
-
-  const bindCheckboxes = () => {
-    document.querySelectorAll("input[type='checkbox']").forEach((box) => {
-      box.addEventListener("change", () => {
-        saveState();
-        updateProgress();
-      });
-    });
-  };
-
-  const makeICal = () => {
-    const events = [
-      { title: "Physics Test", date: "2026-10-14", time: "09:00" },
-      { title: "Math Anchor Session", date: "2026-10-05", time: "19:00" },
-      { title: "Chemistry Review", date: "2026-10-06", time: "19:30" },
-      { title: "AP Euro Session", date: "2026-10-08", time: "19:00" }
-    ];
-
-    const lines = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//Abby Study Planner//EN",
-      "BEGIN:VEVENT"
-    ];
-
-    events.forEach((event) => {
-      const start = `${event.date.replace(/-/g, "")}T${event.time.replace(":", "")}00`;
-      lines.push(`SUMMARY:${event.title}`);
-      lines.push(`DTSTART:${start}`);
-      lines.push(`DTEND:${start}`);
-      lines.push("END:VEVENT");
-    });
-
-    lines.push("END:VCALENDAR");
-    return lines.join("\r\n");
-  };
-
-  const downloadCalendar = () => {
-    const blob = new Blob([makeICal()], { type: "text/calendar;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "abby-study-planner.ics";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  if (calendarBtn) calendarBtn.addEventListener("click", downloadCalendar);
-  if (calendarBtnCover) calendarBtnCover.addEventListener("click", downloadCalendar);
-
-  bindCheckboxes();
-  loadState();
   updateProgress();
+});
 
-  checkboxKeys.forEach((key) => {
-    const el = document.querySelector(`input[data-key="${key}"]`);
-    if (el) {
-      el.checked = !!localStorage.getItem(`planner-${key}`);
+/* -----------------------------
+   2. Progress bar updater
+----------------------------- */
+
+function updateProgress() {
+  const groups = document.querySelectorAll("[data-progress-group]");
+
+  groups.forEach(bar => {
+    const groupName = bar.dataset.progressGroup;
+
+    const groupBoxes = document.querySelectorAll(`input[data-group='${groupName}']`);
+    const completed = Array.from(groupBoxes).filter(b => b.checked).length;
+    const total = groupBoxes.length;
+
+    const percent = total === 0 ? 0 : (completed / total) * 100;
+
+    const barFill = bar.querySelector("span");
+    if (barFill) barFill.style.width = `${percent}%`;
+
+    const label = document.querySelector(`[data-progress-label='${groupName}']`);
+    if (label) label.textContent = `${completed}/${total}`;
+  });
+}
+
+/* -----------------------------
+   3. Smooth scrolling
+----------------------------- */
+
+document.querySelectorAll("nav a[href^='#']").forEach(link => {
+  link.addEventListener("click", e => {
+    e.preventDefault();
+    const target = document.querySelector(link.getAttribute("href"));
+    if (target) {
+      window.scrollTo({
+        top: target.offsetTop - 20,
+        behavior: "smooth"
+      });
     }
   });
 });
+
+/* -----------------------------
+   4. Calendar (.ics) generator
+----------------------------- */
+
+function generateICS() {
+  const title = "Abby's Study Window";
+  const description = "Evening study window: 7:00 PM – 10:30 PM";
+  const startTime = "190000"; // 7 PM
+  const endTime = "223000";   // 10:30 PM
+
+  // Oct 1 – Dec 31, 2026
+  const startDate = "20261001";
+  const endDate = "20261231";
+
+  const ics = `
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Abby Planner//EN
+BEGIN:VEVENT
+DTSTART:${startDate}T${startTime}
+DTEND:${startDate}T${endTime}
+RRULE:FREQ=DAILY;UNTIL=${endDate}T235900
+SUMMARY:${title}
+DESCRIPTION:${description}
+END:VEVENT
+END:VCALENDAR
+  `.trim();
+
+  const blob = new Blob([ics], { type: "text/calendar" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "study-window.ics";
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+/* Buttons */
+document.getElementById("calendar-btn")?.addEventListener("click", generateICS);
+document.getElementById("calendar-btn-cover")?.addEventListener("click", generateICS);
